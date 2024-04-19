@@ -38,7 +38,7 @@ const useCouponSubmit = (id) => {
       setIsSubmitting(true);
       const couponData = {
         // title: data.title,
-        // just commeneted for now uncomment when its about to be imlemented
+        // just commeneted for now uncomment when its about to be implemented
         title: {
           [language]: data.title,
         },

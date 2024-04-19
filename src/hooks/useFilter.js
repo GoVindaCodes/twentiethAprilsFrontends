@@ -186,7 +186,6 @@ const useFilter = (data) => {
     }
 
     if (attributeTitle) {
-      console.log("asss");
       services = services.filter(
         (search) =>
           search?.title[lang]

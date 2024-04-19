@@ -40,46 +40,84 @@ const ChildCategory = () => {
   const { data, loading } = useAsync(CategoryServices.getAllCategory);
 
   const { t } = useTranslation();
-
   useEffect(() => {
-    const getAncestors = (target, children, ancestors = []) => {
-      for (let node of children) {
-        if (node._id === target) {
-          return ancestors.concat(node);
-        }
-        const found = getAncestors(
-          target,
-          node?.children,
-          ancestors?.concat(node)
-        );
-        if (found) {
-          return found;
-        }
-      }
-      return undefined;
-    };
-
-    const findChildArray = (obj, target) => {
-      // console.log('obj', obj);
-      return obj._id === target
-        ? obj
-        : obj?.children?.reduce(
-            (acc, obj) => acc ?? findChildArray(obj, target),
-            undefined
-          );
-    };
-
-    if (!loading) {
-      const result = findChildArray(data[0], id);
-      const res = getAncestors(id, data[0]?.children);
-
-      if (result?.children?.length > 0) {
-        setChildCategory(result?.children);
-        setSelectObj(res);
-      }
-      // console.log("result", result, "res", res);
+    if (loading) {
+      return;
     }
-  }, [id, loading, data, childCategory]);
+
+    // Determine the correct root category, assuming data is an array of categories
+    const rootCategory = data.find((category) => category._id === id);
+
+    if (!rootCategory) {
+      // If root category is not found, handle the case (e.g., show an error or return)
+      console.error("Root category not found.");
+      return;
+    }
+
+    // Recursive function to find child categories based on the given ID
+    const findChildArray = (category, targetId) => {
+      if (category._id === targetId) {
+        return category.children || [];
+      }
+
+      if (category.children) {
+        for (const child of category.children) {
+          const result = findChildArray(child, targetId);
+          if (result) {
+            return result;
+          }
+        }
+      }
+
+      return null;
+    };
+
+    // Use the correct root category as the starting point
+    const childArray = findChildArray(rootCategory, id);
+
+    // Update the state with the filtered child categories
+    setChildCategory(childArray);
+  }, [id, loading, data]);
+
+  // useEffect(() => {
+  //   const getAncestors = (target, children, ancestors = []) => {
+  //     for (let node of children) {
+  //       if (node._id === target) {
+  //         return ancestors.concat(node);
+  //       }
+  //       const found = getAncestors(
+  //         target,
+  //         node?.children,
+  //         ancestors?.concat(node)
+  //       );
+  //       if (found) {
+  //         return found;
+  //       }
+  //     }
+  //     return undefined;
+  //   };
+
+  //   const findChildArray = (obj, target) => {
+  //     // console.log('obj', obj);
+  //     return obj._id === target
+  //       ? obj
+  //       : obj?.children?.reduce(
+  //         (acc, obj) => acc ?? findChildArray(obj, target),
+  //         undefined
+  //       );
+  //   };
+
+  //   if (!loading) {
+  //     const result = findChildArray(data[0], id);
+  //     const res = getAncestors(id, data[0]?.children);
+
+  //     if (result?.children?.length > 0) {
+  //       setChildCategory(result?.children);
+  //       setSelectObj(res);
+  //     }
+  //     // console.log("result", result, "res", res);
+  //   }
+  // }, [id, loading, data, childCategory]);
 
   const {
     totalResults,
@@ -187,7 +225,7 @@ const ChildCategory = () => {
                 <TableCell>{t("catIconTbl")}</TableCell>
                 <TableCell>{t("Name")}</TableCell>
                 <TableCell>{t("Description")}</TableCell>
-            
+
                 <TableCell className="text-center">
                   {t("catPublishedTbl")}
                 </TableCell>
@@ -204,7 +242,7 @@ const ChildCategory = () => {
               isCheck={isCheck}
               setIsCheck={setIsCheck}
               useParamId={id}
-             
+
             />
           </Table>
           <TableFooter>

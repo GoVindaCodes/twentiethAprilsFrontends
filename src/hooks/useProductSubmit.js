@@ -109,34 +109,52 @@ const useProductSubmit = (id) => {
       setBarcode(data.barcode);
       setSku(data.sku);
       setOriginalPrice(data.originalPrice);
-
       const productData = {
-        productId: productId,
+        // productId: productId,
+        _id: data._id,
         sku: data.sku || "",
         barcode: data.barcode || "",
-        title: {
-          [language]: data.title,
-        },
-        description: { [language]: data.description ? data.description : "" },
-        slug: data.slug
-          ? data.slug
-          : data.title.toLowerCase().replace(/[^A-Z0-9]+/gi, "-"),
-
-        categories: selectedCategory?.children?.map((item) => item._id),
+        title: data.title,
+        description: data.description,
+        slug: data.slug,
+        categories: data.categories,
         category: defaultCategory[0]._id,
 
-        image: imageUrl,
-        stock: variants?.length < 1 ? data.stock : Number(totalStock),
-        tag: JSON.stringify(tag),
-
-        prices: {
-          price: Number(data.price) || 0,
-          originalPrice: data.originalPrice || 0,
-          discount: Number(data.originalPrice) - Number(data.price),
-        },
-        isCombination: updatedVariants?.length > 0 ? isCombination : false,
+        image: data.imageUrl,
+        stock: data.stock,
+        tag: data.tag,
+        price: data.price || 0,
+        originalPrice: data.originalPrice || 0,
         variants: isCombination ? updatedVariants : [],
       };
+
+      // const productData = {
+      //   productId: productId,
+      //   sku: data.sku || "",
+      //   barcode: data.barcode || "",
+      //   title: {
+      //     [language]: data.title,
+      //   },
+      //   description: { [language]: data.description ? data.description : "" },
+      //   slug: data.slug
+      //     ? data.slug
+      //     : data.title.toLowerCase().replace(/[^A-Z0-9]+/gi, "-"),
+
+      //   categories: selectedCategory?.children?.map((item) => item._id),
+      //   category: defaultCategory[0]._id,
+
+      //   image: imageUrl,
+      //   stock: variants?.length < 1 ? data.stock : Number(totalStock),
+      //   tag: JSON.stringify(tag),
+
+      //   prices: {
+      //     price: Number(data.price) || 0,
+      //     originalPrice: data.originalPrice || 0,
+      //     discount: Number(data.originalPrice) - Number(data.price),
+      //   },
+      //   isCombination: updatedVariants?.length > 0 ? isCombination : false,
+      //   variants: isCombination ? updatedVariants : [],
+      // };
 
       // console.log("productData ===========>", productData, "data", data);
       // return setIsSubmitting(false);

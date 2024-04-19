@@ -24,7 +24,7 @@ const EditDeleteButton = ({
         {children?.length > 0 ? (
           <>
             <Link
-              to={`/categories/${parent?._id}`}
+              to={`/api/category/${id}`}
               className="p-2 cursor-pointer text-gray-400 hover:text-green-600 focus:outline-none"
             >
               <Tooltip
